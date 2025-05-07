@@ -1,0 +1,33 @@
+name: Deploy API
+
+on:
+  push:
+    branches: ['master']
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Copy files to VM
+        uses: appleboy/scp-action@v0.1.6
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          source: '.'
+          target: '/home/azureuser/app'
+
+      - name: Run app on VM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            cd /home/azureuser/app
+            npm install
+            sudo nohup node index.js &
