@@ -2,7 +2,7 @@ name: Deploy API
 
 on:
   push:
-    branches: ['master']
+    branches: ['main']
 
 jobs:
   deploy:
@@ -30,4 +30,4 @@ jobs:
           script: |
             cd /home/azureuser/app
             npm install
-            sudo nohup node index.js &
+            sudo nohup node app.js &
